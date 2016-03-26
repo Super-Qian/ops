@@ -1,0 +1,24 @@
+if [ $# != 2 ];then
+    echo "USAGE: ./$0 jobname {--list|--stop|--start}"
+    exit 1
+fi
+
+case $2 in
+    --list) crontab -l ;;
+    --start) a=`grep "$1" /home/username/cronfile | awk '{print $1}'`
+        if [ "${a:0:1}" = "#" ];then
+            crontab -r
+            sed -i "/$1/s/^#//" /home/username/cronfile
+            crontab /home/username/cronfile
+        fi
+        ;;
+    --stop) a=`grep "$1" /home/username/cronfile | awk '{print $1}'`
+        if [ "${a:0:1}" != "#" ];then
+            crontab -r
+            sed -i "/$1/s/^/#/" /home/username/cronfile
+            crontab /home/username/cronfile
+        fi
+        ;;
+    *)
+        echo "USAGE: ./$0 jobname {--list|--stop|--start}" ;;
+esac
