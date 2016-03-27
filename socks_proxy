@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set password password # set the password
+set timeout -1
+spawn ssh -qTNf -D 2222 username@remotehost
+expect {
+    "*yes/no" { send "yes\r"; exp_continue }
+    "*password:" { send "$password\r" }
+}
+expect eof
