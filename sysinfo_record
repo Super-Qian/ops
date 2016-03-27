@@ -1,0 +1,11 @@
+#!/bin/bash
+
+crontab -l | grep -v '^#' > cronfile
+# 每分钟查看记录一次
+echo "*/1 * * * * echo -n \$(date +%Y-%m-%d-%H-%M) >>/tmp/cpu.log && top -n 1|grep \"Cpu\" >>/tmp/cpu.log " >> cronfile
+# 每小时备份一次
+echo "* */1 * * * cat /tmp/cpu.log >> /tmp/cpu_old.log && rm /tmp/cpu.log" >>cronfile
+# 每天清除一次备份
+echo "* * */1 * * rm /tmp/cpu_old.log" >>cronfile
+
+crontab cronfile
